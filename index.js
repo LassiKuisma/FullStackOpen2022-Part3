@@ -75,6 +75,28 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
+const generateId = () => {
+    const maxId = 100000;
+    return Math.floor(Math.random() * maxId);
+}
+
+// create new
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    const id = generateId()
+
+    const contact = {
+        name: body.name,
+        number: body.number,
+        id: id
+    }
+
+    contacts = contacts.concat(contact)
+    console.log(`Added new contact id=${id}`);
+
+    response.json(contact)
+})
+
 
 const PORT = 3001
 app.listen(PORT, () => {
