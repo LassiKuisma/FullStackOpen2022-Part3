@@ -1,7 +1,11 @@
 const express = require('express')
 const app = express()
 
+const morgan = require('morgan')
+
+
 app.use(express.json())
+app.use(morgan('tiny'))
 
 let contacts = [
     {
@@ -33,19 +37,13 @@ app.get('/', (request, response) => {
 
 // all contacts
 app.get('/api/persons', (request, response) => {
-    console.log("Get all contacts");
-
     response.json(contacts)
 })
 
 // info page
 app.get('/info', (request, response) => {
-    console.log("Info page");
-
-    const now = new Date()
-    console.log('Now is:', now.toUTCString());
-
     const amount = contacts.length
+    const now = new Date()
     const dateStr = now.toUTCString()
     response.send(
         `<p>Phonebook has info of ${amount} people</p>
@@ -56,7 +54,6 @@ app.get('/info', (request, response) => {
 // get individual info
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    console.log(`Getting contact with id ${id}`);
 
     const contact = contacts.find(contact => contact.id === id)
     if (contact) {
@@ -69,7 +66,6 @@ app.get('/api/persons/:id', (request, response) => {
 // delete
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    console.log(`Deleting contact id=${id}`);
     contacts = contacts.filter(contact => contact.id !== id)
 
     response.status(204).end()
@@ -86,7 +82,6 @@ app.post('/api/persons', (request, response) => {
     const id = generateId()
 
     if (!body.name) {
-        console.log('Missing field: name');
 
         return response.status(400).json({
             error: 'name missing'
@@ -94,7 +89,6 @@ app.post('/api/persons', (request, response) => {
     }
 
     if (!body.number) {
-        console.log('Missing field: number');
 
         return response.status(400).json({
             error: 'number missing'
@@ -104,7 +98,6 @@ app.post('/api/persons', (request, response) => {
 
     const existingContact = contacts.find(contact => contact.name === body.name)
     if (existingContact) {
-        console.log(`Contact "${body.name}" already exists`);
         return response.status(400).json({
             error: 'name must be unique'
         })
@@ -117,10 +110,15 @@ app.post('/api/persons', (request, response) => {
     }
 
     contacts = contacts.concat(contact)
-    console.log(`Added new contact id=${id}`);
 
     response.json(contact)
 })
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
 
 
 const PORT = 3001
