@@ -85,6 +85,31 @@ app.post('/api/persons', (request, response) => {
     const body = request.body
     const id = generateId()
 
+    if (!body.name) {
+        console.log('Missing field: name');
+
+        return response.status(400).json({
+            error: 'name missing'
+        })
+    }
+
+    if (!body.number) {
+        console.log('Missing field: number');
+
+        return response.status(400).json({
+            error: 'number missing'
+        })
+    }
+
+
+    const existingContact = contacts.find(contact => contact.name === body.name)
+    if (existingContact) {
+        console.log(`Contact "${body.name}" already exists`);
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
+
     const contact = {
         name: body.name,
         number: body.number,
