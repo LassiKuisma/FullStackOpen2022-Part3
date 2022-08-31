@@ -3,7 +3,7 @@ const app = express()
 
 app.use(express.json())
 
-const persons = [
+const contacts = [
     {
         "name": "Arto Hellas",
         "number": "040-123456",
@@ -35,7 +35,7 @@ app.get('/', (request, response) => {
 app.get('/api/persons', (request, response) => {
     console.log("Get all contacts");
 
-    response.json(persons)
+    response.json(contacts)
 })
 
 // info page
@@ -45,12 +45,25 @@ app.get('/info', (request, response) => {
     const now = new Date()
     console.log('Now is:', now.toUTCString());
 
-    const amount = persons.length
+    const amount = contacts.length
     const dateStr = now.toUTCString()
     response.send(
         `<p>Phonebook has info of ${amount} people</p>
     <p>${dateStr}</p>`
     )
+})
+
+// get individual info
+app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    console.log(`Getting contact with id ${id}`);
+
+    const contact = contacts.find(contact => contact.id === id)
+    if (contact) {
+        response.json(contact)
+    } else {
+        response.status(404).end()
+    }
 })
 
 const PORT = 3001
