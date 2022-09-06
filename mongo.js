@@ -7,18 +7,22 @@ const dbUrl = (password) => {
     return url
 }
 
-const displayInfo = (password) => {
-    console.log('display contact(s):');
-
-    const url = dbUrl(password)
-
-    mongoose.connect(url)
+const contactModel = () => {
     const contactSchema = new mongoose.Schema({
         name: String,
         number: String,
     })
 
     const Contact = mongoose.model('Contact', contactSchema)
+    return Contact
+}
+
+const displayInfo = (dbUrl) => {
+    console.log('display contact(s):');
+
+    mongoose.connect(dbUrl)
+
+    const Contact = contactModel()
     Contact.find({}).then(result => {
         console.log(`Phonebook has ${result.length} contacts`);
         result.forEach(contact => {
@@ -28,19 +32,12 @@ const displayInfo = (password) => {
     })
 }
 
-const addContact = (password, name, number) => {
+const addContact = (dbUrl, name, number) => {
     console.log(`adding contact...`);
 
-    const url = dbUrl(password)
+    mongoose.connect(dbUrl)
 
-    mongoose.connect(url)
-    const contactSchema = new mongoose.Schema({
-        name: String,
-        number: String,
-    })
-
-    const Contact = mongoose.model('Contact', contactSchema)
-
+    const Contact = contactModel()
     const contact = new Contact({
         name: name,
         number: number
@@ -55,22 +52,16 @@ const addContact = (password, name, number) => {
 // main starts here
 if (process.argv.length === 3) {
     const password = process.argv[2]
-    displayInfo(password)
+    displayInfo(dbUrl(password))
 
 } else if (process.argv.length === 5) {
     const password = process.argv[2]
     const name = process.argv[3]
     const number = process.argv[4]
 
-    addContact(password, name, number)
+    addContact(dbUrl(password), name, number)
 
 } else {
     console.log('Give password, name and number as args to add new contact, or just password to display contacts');
     process.exit(1)
 }
-
-
-
-
-
-
