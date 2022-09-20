@@ -49,7 +49,18 @@ app.get('/info', (request, response) => {
 
 // get individual info
 app.get('/api/persons/:id', (request, response) => {
-    response.send('coming soon :>')
+    Contact.findById(request.params.id)
+        .then(contact => {
+            if (contact) {
+                response.json(contact)
+            } else {
+                response.status(404).end()
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            response.status(400).send({ error: 'malformatted id' })
+        })
 })
 
 // delete
