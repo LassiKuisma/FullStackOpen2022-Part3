@@ -65,10 +65,14 @@ app.get('/api/persons/:id', (request, response) => {
 
 // delete
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    //contacts = contacts.filter(contact => contact.id !== id)
-
-    response.status(204).end()
+    Contact.findByIdAndDelete(request.params.id)
+        .then(deleteResponse => {
+            response.status(204).end()
+        })
+        .catch(error => {
+            console.log(error);
+            response.status(400).end()
+        })
 })
 
 // create new
