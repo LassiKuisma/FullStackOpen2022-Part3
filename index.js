@@ -1,5 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
+const Contact = require('./models/contact')
+
 app.use(express.static('build'))
 
 const morgan = require('morgan')
@@ -48,7 +51,9 @@ app.get('/', (request, response) => {
 
 // all contacts
 app.get('/api/persons', (request, response) => {
-    response.json(contacts)
+    Contact.find({}).then(contacts => {
+        response.json(contacts)
+    })
 })
 
 // info page
@@ -132,7 +137,7 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 })
