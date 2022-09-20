@@ -60,15 +60,25 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-const generateId = () => {
-    const maxId = 100000;
-    return Math.floor(Math.random() * maxId);
-}
-
 // create new
 app.post('/api/persons', (request, response) => {
-    response.status(400).json({
-        error: 'coming soon'
+    const body = request.body
+
+    if (body.name === undefined) {
+        return response.status(400).json({ error: 'name missing' })
+    }
+    if (body.number === undefined) {
+        return response.status(400).json({ error: 'number missing' })
+    }
+
+
+    const contact = new Contact({
+        name: body.name,
+        number: body.number
+    })
+
+    contact.save().then(saved => {
+        response.json(saved)
     })
 })
 
