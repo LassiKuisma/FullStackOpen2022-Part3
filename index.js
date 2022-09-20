@@ -21,28 +21,6 @@ morgan.token('contact-data', request => {
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :contact-data'))
 
-let contacts = [
-    {
-        "name": "Arto Hellas",
-        "number": "040-123456",
-        "id": 1
-    },
-    {
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523",
-        "id": 2
-    },
-    {
-        "name": "Dan Abramov",
-        "number": "12-43-234345",
-        "id": 3
-    },
-    {
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122",
-        "id": 4
-    }
-]
 
 // main page
 app.get('/', (request, response) => {
@@ -58,31 +36,26 @@ app.get('/api/persons', (request, response) => {
 
 // info page
 app.get('/info', (request, response) => {
-    const amount = contacts.length
-    const now = new Date()
-    const dateStr = now.toUTCString()
-    response.send(
-        `<p>Phonebook has info of ${amount} people</p>
-    <p>${dateStr}</p>`
-    )
+    Contact.find({}).then(contacts => {
+        const amount = contacts.length
+        const now = new Date()
+        const dateStr = now.toUTCString()
+        response.send(
+            `<p>Phonebook has info of ${amount} people</p>
+            <p>${dateStr}</p>`
+        )
+    })
 })
 
 // get individual info
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-
-    const contact = contacts.find(contact => contact.id === id)
-    if (contact) {
-        response.json(contact)
-    } else {
-        response.status(404).end()
-    }
+    response.send('coming soon :>')
 })
 
 // delete
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    contacts = contacts.filter(contact => contact.id !== id)
+    //contacts = contacts.filter(contact => contact.id !== id)
 
     response.status(204).end()
 })
@@ -94,40 +67,9 @@ const generateId = () => {
 
 // create new
 app.post('/api/persons', (request, response) => {
-    const body = request.body
-    const id = generateId()
-
-    if (!body.name) {
-
-        return response.status(400).json({
-            error: 'name missing'
-        })
-    }
-
-    if (!body.number) {
-
-        return response.status(400).json({
-            error: 'number missing'
-        })
-    }
-
-
-    const existingContact = contacts.find(contact => contact.name === body.name)
-    if (existingContact) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
-
-    const contact = {
-        name: body.name,
-        number: body.number,
-        id: id
-    }
-
-    contacts = contacts.concat(contact)
-
-    response.json(contact)
+    response.status(400).json({
+        error: 'coming soon'
+    })
 })
 
 const unknownEndpoint = (request, response) => {
