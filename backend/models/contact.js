@@ -20,6 +20,12 @@ const contactSchema = new mongoose.Schema({
     },
     number: {
         type: String,
+        minlength: 8,
+        validate: function (v) {
+            // ##-###### or ###-#####
+            return /^\d{2}-\d{6}/.test(v) ||
+                /^\d{3}-\d{5}/.test(v)
+        }
     },
 })
 
