@@ -11,8 +11,8 @@ const cors = require('cors')
 app.use(cors())
 
 morgan.token('contact-data', request => {
-    if (request.method !== "POST") {
-        return ""
+    if (request.method !== 'POST') {
+        return ''
     }
 
     return JSON.stringify(request.body)
@@ -63,7 +63,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 // delete
 app.delete('/api/persons/:id', (request, response, next) => {
     Contact.findByIdAndDelete(request.params.id)
-        .then(deleteResponse => {
+        .then(_deleteResponse => {
             response.status(204).end()
         })
         .catch(error => next(error))
@@ -122,5 +122,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`)
 })

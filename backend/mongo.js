@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const dbUrl = (password) => {
-    const dbName = "p3phonebook"
+    const dbName = 'p3phonebook'
     const url =
         `mongodb+srv://fullstack:${password}@cluster0.opqogig.mongodb.net/${dbName}?retryWrites=true&w=majority`
     return url
@@ -18,22 +18,22 @@ const contactModel = () => {
 }
 
 const displayInfo = (dbUrl) => {
-    console.log('display contact(s):');
+    console.log('display contact(s):')
 
     mongoose.connect(dbUrl)
 
     const Contact = contactModel()
     Contact.find({}).then(result => {
-        console.log(`Phonebook has ${result.length} contacts`);
+        console.log(`Phonebook has ${result.length} contacts`)
         result.forEach(contact => {
-            console.log(`${contact.name} ${contact.number}`);
+            console.log(`${contact.name} ${contact.number}`)
         })
         mongoose.connection.close()
     })
 }
 
 const addContact = (dbUrl, name, number) => {
-    console.log(`adding contact...`);
+    console.log('adding contact...')
 
     mongoose.connect(dbUrl)
 
@@ -43,8 +43,8 @@ const addContact = (dbUrl, name, number) => {
         number: number
     })
 
-    contact.save().then(result => {
-        console.log(`Added "${name}", "${number}" to phonebook`);
+    contact.save().then(_result => {
+        console.log(`Added "${name}", "${number}" to phonebook`)
         mongoose.connection.close()
     })
 }
@@ -62,6 +62,6 @@ if (process.argv.length === 3) {
     addContact(dbUrl(password), name, number)
 
 } else {
-    console.log('Give password, name and number as args to add new contact, or just password to display contacts');
+    console.log('Give password, name and number as args to add new contact, or just password to display contacts')
     process.exit(1)
 }
