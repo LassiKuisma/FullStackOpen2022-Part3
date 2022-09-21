@@ -83,16 +83,28 @@ const App = () => {
         setPersons(persons.concat(newContact));
         setNewName('');
         setNewNumber('');
+
+        setNotification({
+          "type": "green",
+          "message": `Added ${personObject.name}`
+        })
+
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000);
       })
+      .catch(error => {
+        console.log(error.response.data.error)
 
-    setNotification({
-      "type": "green",
-      "message": `Added ${personObject.name}`
-    })
+        setNotification({
+          type: "red",
+          message: error.response.data.error
+        })
 
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000);
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000);
+      })
   }
 
   const updateContact = (oldId, personObject) => {
@@ -104,16 +116,28 @@ const App = () => {
             ? person
             : response
         ));
+
+        setNotification({
+          type: "yellow",
+          message: `Updated ${personObject.name}`
+        })
+
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000);
       })
+      .catch(error => {
+        console.log(error.response.data.error)
 
-    setNotification({
-      type: "yellow",
-      message: `Updated ${personObject.name}`
-    })
+        setNotification({
+          type: "red",
+          message: error.response.data.error
+        })
 
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000);
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000);
+      })
   }
 
   const addContact = (event) => {
